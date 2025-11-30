@@ -683,7 +683,7 @@
     </div>
 </section>
 
-<!-- How It Works -->
+<!-- How It Workeeers -->
 <!-- <section class="how-it-works">
     <div class="container">
         <div class="section-header">
