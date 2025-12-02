@@ -4,55 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Campaign;
 use App\Models\Category;
+use App\Services\CampaignService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class CampaignController extends Controller
 {
+    protected $campaignService;
+
+    public function __construct(CampaignService $campaignService)
+    {
+        $this->campaignService = $campaignService;
+    }
+
     public function index(Request $request)
     {
-        $query = Campaign::with('category', 'user')->active();
-
-        // Search
-        if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
-        }
-
-        // Filter by category
-        if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
-        }
-
-        // Filter by location
-        if ($request->filled('location')) {
-            $query->byLocation($request->location);
-        }
-
-        // Filter by urgency
-        if ($request->filled('urgent')) {
-            $query->urgent();
-        }
-
-        // Filter by verification
-        if ($request->filled('verified')) {
-            $query->verified();
-        }
-
-        // Sort
-        $sort = $request->get('sort', 'latest');
-        switch ($sort) {
-            case 'ending_soon':
-                $query->orderBy('end_date', 'asc');
-                break;
-            case 'most_funded':
-                $query->orderBy('current_amount', 'desc');
-                break;
-            default:
-                $query->latest();
-        }
-
-        $campaigns = $query->paginate(12);
+        $campaigns = $this->campaignService->getCampaigns($request);
         $categories = Category::all();
 
         return view('campaigns.index', compact('campaigns', 'categories'));
@@ -61,12 +27,7 @@ class CampaignController extends Controller
     public function show(Campaign $campaign)
     {
         $campaign->load('user', 'category', 'updates', 'comments.user', 'donations');
-
-        $similarCampaigns = Campaign::active()
-            ->where('category_id', $campaign->category_id)
-            ->where('id', '!=', $campaign->id)
-            ->take(3)
-            ->get();
+        $similarCampaigns = $this->campaignService->getSimilarCampaigns($campaign);
 
         return view('campaigns.show', compact('campaign', 'similarCampaigns'));
     }
@@ -84,18 +45,12 @@ class CampaignController extends Controller
             'isVerified' => $user->isVerified(),
         ]);
 
-        // Check if user is a recipient
-        if (!$user->isRecipient()) {
-            \Log::warning('Non-recipient tried to create campaign', ['user_id' => $user->id, 'role' => $user->role]);
-            return redirect()->route('dashboard')
-                ->with('error', 'Only verified recipients can create campaigns. Please register as a recipient first.');
-        }
+        // Validate user can create campaign
+        $validation = $this->campaignService->canUserCreateCampaign($user);
 
-        // Check if user is verified
-        if (!$user->isVerified()) {
-            \Log::warning('Unverified recipient tried to create campaign', ['user_id' => $user->id]);
-            return redirect()->route('verification.index')
-                ->with('error', 'You must complete verification before creating campaigns.');
+        if (!$validation['can_create']) {
+            return redirect()->route($validation['redirect'])
+                ->with('error', $validation['message']);
         }
 
         $categories = Category::all();
@@ -107,16 +62,12 @@ class CampaignController extends Controller
     {
         $user = auth()->user();
 
-        // Check if user is a recipient
-        if (!$user->isRecipient()) {
-            return redirect()->route('dashboard')
-                ->with('error', 'Only verified recipients can create campaigns.');
-        }
+        // Validate user can create campaign
+        $validation = $this->campaignService->canUserCreateCampaign($user);
 
-        // Check if user is verified
-        if (!$user->isVerified()) {
-            return redirect()->route('verification.index')
-                ->with('error', 'You must complete verification before creating campaigns.');
+        if (!$validation['can_create']) {
+            return redirect()->route($validation['redirect'])
+                ->with('error', $validation['message']);
         }
 
         $validated = $request->validate([
@@ -133,17 +84,11 @@ class CampaignController extends Controller
             'in_kind_needs' => 'nullable|string',
         ]);
 
-        $campaign = new Campaign($validated);
-        $campaign->user_id = $user->id;
-        $campaign->slug = Str::slug($request->title) . '-' . Str::random(6);
-        $campaign->status = 'pending';
-
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('campaigns', 'public');
-            $campaign->image_path = $path;
-        }
-
-        $campaign->save();
+        $campaign = $this->campaignService->createCampaign(
+            $validated,
+            $user,
+            $request->file('image')
+        );
 
         return redirect()->route('dashboard')
             ->with('success', 'Campaign submitted for approval!');
@@ -175,14 +120,11 @@ class CampaignController extends Controller
             'in_kind_needs' => 'nullable|string',
         ]);
 
-        $campaign->fill($validated);
-
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('campaigns', 'public');
-            $campaign->image_path = $path;
-        }
-
-        $campaign->save();
+        $campaign = $this->campaignService->updateCampaign(
+            $campaign,
+            $validated,
+            $request->file('image')
+        );
 
         return redirect()->route('campaigns.show', $campaign)
             ->with('success', 'Campaign updated successfully!');
@@ -191,17 +133,8 @@ class CampaignController extends Controller
     public function follow(Campaign $campaign)
     {
         $user = auth()->user();
+        $result = $this->campaignService->toggleFollow($campaign, $user);
 
-        if ($user->followedCampaigns()->where('campaign_id', $campaign->id)->exists()) {
-            $user->followedCampaigns()->detach($campaign->id);
-            $campaign->decrement('followers_count');
-            $message = 'Campaign unfollowed.';
-        } else {
-            $user->followedCampaigns()->attach($campaign->id);
-            $campaign->increment('followers_count');
-            $message = 'Campaign followed!';
-        }
-
-        return back()->with('success', $message);
+        return back()->with('success', $result['message']);
     }
 }
