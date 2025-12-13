@@ -22,7 +22,7 @@ class DonorBadge extends Model
         'criteria_value' => 'integer',
     ];
 
-    // Relationships
+    // Relationships vvvv
     public function users()
     {
     return $this->belongsToMany(User::class, 'user_badges', 'badge_id', 'user_id')
