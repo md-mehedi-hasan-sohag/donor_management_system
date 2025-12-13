@@ -31,6 +31,9 @@ class Campaign extends Model
         'rejection_reason',
         'approved_by',
         'approved_at',
+        'completed_at',
+        'archived_at',
+        'days_until_archive',
         'total_donors',
         'followers_count',
     ];
@@ -38,6 +41,8 @@ class Campaign extends Model
     protected $casts = [
         'end_date' => 'date',
         'approved_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'archived_at' => 'datetime',
         'is_urgent' => 'boolean',
         'is_verified' => 'boolean',
         'accepts_volunteers' => 'boolean',
@@ -103,6 +108,11 @@ class Campaign extends Model
         return $this->belongsTo(User::class, 'approved_by');
     }
 
+    public function questions()
+    {
+        return $this->hasMany(CampaignQuestion::class)->orderBy('is_pinned', 'desc')->orderBy('created_at', 'desc');
+    }
+
     // Scopes
     public function scopeActive($query)
     {
@@ -141,6 +151,26 @@ class Campaign extends Model
         return $query->where('location', 'like', "%{$location}%");
     }
 
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'expired');
+    }
+
+    public function scopeExpiredStatus($query)
+    {
+        return $query->where('status', 'expired');
+    }
+
+    public function scopeArchived($query)
+    {
+        return $query->where('status', 'archived');
+    }
+
+    public function scopeNotArchived($query)
+    {
+        return $query->whereNull('archived_at');
+    }
+
     // Helpers
     public function progressPercentage()
     {
@@ -166,5 +196,50 @@ class Campaign extends Model
     public function hasReachedMilestone($percentage)
     {
         return $this->progressPercentage() >= $percentage;
+    }
+
+    public function isCompleted()
+    {
+        return $this->status === 'expired' || $this->status === 'archived';
+    }
+
+    public function isExpiredStatus()
+    {
+        return $this->status === 'expired';
+    }
+
+    public function isArchived()
+    {
+        return $this->status === 'archived';
+    }
+
+    public function canAcceptDonations()
+    {
+        return $this->status === 'active' && !$this->isExpired();
+    }
+
+    public function daysUntilArchive()
+    {
+        if (!$this->completed_at || $this->archived_at) {
+            return null;
+        }
+
+        $archiveDate = $this->completed_at->addDays($this->days_until_archive);
+        return max(0, now()->diffInDays($archiveDate, false));
+    }
+
+    public function getStatusBadge()
+    {
+        return match($this->status) {
+            'active' => $this->isExpired() ?
+                '<span class="badge badge-warning">⏰ Ending Soon</span>' :
+                '<span class="badge badge-success">✓ Active</span>',
+            'pending' => '<span class="badge badge-warning">⏳ Pending Approval</span>',
+            'expired' => '<span class="badge badge-info">✓ Campaign Ended</span>',
+            'archived' => '<span class="badge badge-secondary">📦 Archived</span>',
+            'rejected' => '<span class="badge badge-danger">✗ Rejected</span>',
+            'draft' => '<span class="badge badge-secondary">📝 Draft</span>',
+            default => '<span class="badge badge-secondary">' . ucfirst($this->status) . '</span>',
+        };
     }
 }

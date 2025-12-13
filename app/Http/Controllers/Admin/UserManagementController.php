@@ -60,7 +60,7 @@ class UserManagementController extends Controller
     public function changeRole(Request $request, User $user)
     {
         $request->validate([
-            'role' => 'required|in:donor,recipient,admin',
+            'role' => 'required|in:donor,recipient',
         ]);
 
         $user->update(['role' => $request->role]);

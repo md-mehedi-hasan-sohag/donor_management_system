@@ -1,0 +1,219 @@
+/* ============================================
+   GLOBAL THEME-AWARE STYLES
+   ============================================ */
+
+/* Common Component Styles with Theme Support */
+
+/* Cards */
+.card, .section-card, .donation-card, .campaign-main, .stat-box {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px -1px var(--card-shadow) !important;
+}
+
+/* Buttons */
+.btn-outline {
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+    background-color: transparent !important;
+}
+
+.btn-outline:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+
+/* Inputs and Forms */
+.form-control, input[type="text"], input[type="email"],
+input[type="password"], input[type="number"],
+textarea, select {
+    background-color: var(--input-bg) !important;
+    border-color: var(--input-border) !important;
+    color: var(--text-primary) !important;
+}
+
+.form-control:focus, input:focus, textarea:focus, select:focus {
+    background-color: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+.form-label {
+    color: var(--text-primary) !important;
+}
+
+/* Tables */
+.table, table {
+    color: var(--text-primary) !important;
+}
+
+thead {
+    background-color: var(--bg-tertiary) !important;
+}
+
+tbody tr {
+    background-color: var(--card-bg) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--bg-tertiary) !important;
+}
+
+/* Badges */
+.badge-secondary {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Alerts */
+.alert {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Modal/Overlay */
+.modal, .modal-content {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+.modal-backdrop {
+    background-color: var(--overlay-bg) !important;
+}
+
+/* Dashboard Headers */
+.dashboard-header, .admin-header, .campaign-hero {
+    background: var(--navbar-bg) !important;
+    color: var(--navbar-text) !important;
+}
+
+/* Section Headers */
+.section-header h2, .section-title, h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary) !important;
+}
+
+/* Text Colors */
+p, span, div, label {
+    color: var(--text-primary);
+}
+
+small, .text-muted {
+    color: var(--text-secondary) !important;
+}
+
+/* Links */
+a {
+    color: var(--text-primary);
+}
+
+/* Progress Bar Container */
+.progress {
+    background-color: var(--bg-tertiary) !important;
+}
+
+/* Comments and Updates */
+.comment, .update-item {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-left-color: #4F46E5 !important;
+}
+
+/* Dropdown Menu */
+.dropdown-menu, .dropdown-menu-custom {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+.dropdown-item, .dropdown-item-custom {
+    color: var(--text-primary) !important;
+}
+
+.dropdown-item:hover, .dropdown-item-custom:hover {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+}
+
+.dropdown-divider {
+    border-color: var(--border-color) !important;
+}
+
+/* Tab Navigation */
+.tab-btn {
+    color: var(--text-secondary) !important;
+}
+
+.tab-btn.active {
+    color: #4F46E5 !important;
+}
+
+/* Campaign Content */
+.campaign-content {
+    background-color: var(--bg-primary) !important;
+}
+
+/* Pagination */
+.pagination a, .pagination span {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Stat Labels and Values */
+.stat-label {
+    color: var(--text-secondary) !important;
+}
+
+.stat-value {
+    color: #4F46E5 !important;
+}
+
+/* Footer Link Overrides for Dark Mode */
+[data-theme="dark"] .footer-description,
+[data-theme="dark"] .footer-links a,
+[data-theme="dark"] .contact-item,
+[data-theme="dark"] .footer-bottom-text,
+[data-theme="dark"] .footer-bottom-links a {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+[data-theme="dark"] .footer-section h3,
+[data-theme="dark"] .footer-logo,
+[data-theme="dark"] .security-text strong,
+[data-theme="dark"] .contact-text strong {
+    color: white !important;
+}
+
+/* Navbar Brand Override */
+[data-theme="dark"] .navbar-brand-custom {
+    color: white !important;
+}
+
+/* Badge Item */
+.badge-item {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Search and Filter Forms */
+.search-form, .filter-form {
+    background-color: var(--card-bg) !important;
+}
+
+/* HR Separator */
+hr {
+    border-color: var(--border-color) !important;
+}
+
+/* Smooth Transitions */
+* {
+    transition-property: background-color, color, border-color;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+}
+
+/* Exclude specific elements from transitions */
+a, button, .btn, .progress-bar {
+    transition-property: all;
+    transition-duration: 0.3s;
+}
