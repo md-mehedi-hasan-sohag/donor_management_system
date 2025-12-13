@@ -227,6 +227,54 @@
                 </small>
             </div>
 
+            <!-- Payment Method Selection -->
+            <div class="form-group" id="paymentMethodSection">
+                <label class="form-label">Select Payment Method</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <label class="payment-method selected" onclick="selectPaymentMethod('bkash')">
+                        <input type="radio" name="payment_method" value="bkash" checked style="display: none;">
+                        <div style="display: flex; align-items: center; gap: 1rem; width: 100%;">
+                            <div style="width: 60px; height: 60px; background: #E2136E; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1rem;">
+                                bKash
+                            </div>
+                            <div style="flex: 1;">
+                                <strong style="display: block;">bKash</strong>
+                                <small style="color: var(--gray-600);">Mobile Payment</small>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="payment-method" onclick="selectPaymentMethod('nagad')">
+                        <input type="radio" name="payment_method" value="nagad" style="display: none;">
+                        <div style="display: flex; align-items: center; gap: 1rem; width: 100%;">
+                            <div style="width: 60px; height: 60px; background: #E93E3A; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1rem;">
+                                Nagad
+                            </div>
+                            <div style="flex: 1;">
+                                <strong style="display: block;">Nagad</strong>
+                                <small style="color: var(--gray-600);">Mobile Payment</small>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="payment-method" onclick="selectPaymentMethod('card')">
+                        <input type="radio" name="payment_method" value="card" style="display: none;">
+                        <div style="display: flex; align-items: center; gap: 1rem; width: 100%;">
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                                <svg width="32" height="32" fill="white" viewBox="0 0 16 16">
+                                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
+                                    <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
+                                </svg>
+                            </div>
+                            <div style="flex: 1;">
+                                <strong style="display: block;">Credit/Debit Card</strong>
+                                <small style="color: var(--gray-600);">Visa, MasterCard, Amex</small>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
             <!-- Payment Info -->
             <div style="background: #dbeafe; padding: 1.5rem; border-radius: 0.5rem; margin: 1.5rem 0; border-left: 4px solid #3b82f6;">
                 <div style="display: flex; gap: 1rem; align-items: start;">
@@ -280,13 +328,17 @@ function updateBreakdown() {
 function selectDonationType(type) {
     document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
     event.currentTarget.classList.add('selected');
-    
+
+    const paymentMethodSection = document.getElementById('paymentMethodSection');
+
     if (type === 'monetary') {
         document.getElementById('monetarySection').style.display = 'block';
         document.getElementById('inKindSection').style.display = 'none';
+        paymentMethodSection.style.display = 'block';
     } else {
         document.getElementById('monetarySection').style.display = 'none';
         document.getElementById('inKindSection').style.display = 'block';
+        paymentMethodSection.style.display = 'none';
     }
 }
 
@@ -294,6 +346,11 @@ function toggleRecurring() {
     const checkbox = document.getElementById('recurringCheckbox');
     const options = document.getElementById('recurringOptions');
     options.style.display = checkbox.checked ? 'block' : 'none';
+}
+
+function selectPaymentMethod(method) {
+    document.querySelectorAll('#paymentMethodSection .payment-method').forEach(el => el.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
 }
 </script>
 @endsection

@@ -26,7 +26,7 @@ class DonationService
         $donation->platform_fee = $platformFee;
         $donation->net_amount = $netAmount;
         $donation->transaction_id = $this->generateTransactionId();
-        $donation->payment_method = 'stripe'; // In real app, this comes from payment gateway
+        $donation->payment_method = $data['payment_method'] ?? 'card';
         $donation->payment_status = 'completed'; // Simulate successful payment
         $donation->payment_completed_at = now();
 

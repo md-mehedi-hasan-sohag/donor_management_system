@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\QrCodeHelper;
 use App\Models\Campaign;
 use App\Models\Category;
 use App\Services\CampaignService;
@@ -26,7 +27,7 @@ class CampaignController extends Controller
 
     public function show(Campaign $campaign)
     {
-        $campaign->load('user', 'category', 'updates', 'comments.user', 'donations');
+        $campaign->load('user', 'category', 'updates', 'comments.user', 'donations', 'questions.user');
         $similarCampaigns = $this->campaignService->getSimilarCampaigns($campaign);
 
         return view('campaigns.show', compact('campaign', 'similarCampaigns'));
@@ -136,5 +137,19 @@ class CampaignController extends Controller
         $result = $this->campaignService->toggleFollow($campaign, $user);
 
         return back()->with('success', $result['message']);
+    }
+
+    /**
+     * Download QR code for campaign
+     */
+    public function downloadQr(Campaign $campaign)
+    {
+        $qrCode = QrCodeHelper::generateCampaignQr($campaign, 500);
+
+        $filename = 'campaign-' . $campaign->id . '-qr-code.svg';
+
+        return response($qrCode)
+            ->header('Content-Type', 'image/svg+xml')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 }

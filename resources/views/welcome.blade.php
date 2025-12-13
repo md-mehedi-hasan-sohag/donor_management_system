@@ -8,6 +8,13 @@
         scroll-behavior: smooth;
     }
 
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
     /* Hero Section */
     .hero-section {
         background: linear-gradient(135deg, rgba(51, 65, 85, 0.95) 0%, rgba(71, 85, 105, 0.95) 50%, rgba(100, 116, 139, 0.95) 100%),
@@ -172,7 +179,7 @@
     /* How It Works */
     .how-it-works {
         padding: 7rem 0;
-        background: white;
+        background: var(--bg-primary);
         position: relative;
         overflow: hidden;
     }
@@ -188,14 +195,14 @@
     .section-title {
         font-size: 3.5rem;
         font-weight: 900;
-        color: #334155;
+        color: var(--text-primary);
         margin-bottom: 1.5rem;
         line-height: 1.2;
     }
 
     .section-subtitle {
         font-size: 1.375rem;
-        color: #64748b;
+        color: var(--text-secondary);
         line-height: 1.8;
     }
 
@@ -232,11 +239,11 @@
         font-size: 1.75rem;
         font-weight: 800;
         margin-bottom: 1rem;
-        color: #334155;
+        color: var(--text-primary);
     }
 
     .step-desc {
-        color: #64748b;
+        color: var(--text-secondary);
         line-height: 1.9;
         font-size: 1.05rem;
     }
@@ -248,7 +255,7 @@
     }
 
     .story-card {
-        background: white;
+        background: var(--card-bg);
         border-radius: 2rem;
         overflow: hidden;
         box-shadow: 0 10px 40px rgba(51, 65, 85, 0.1);
@@ -275,8 +282,8 @@
     .story-tag {
         display: inline-block;
         padding: 0.5rem 1.5rem;
-        background: #e2e8f0;
-        color: #334155;
+        background: var(--border-color);
+        color: var(--text-primary);
         border-radius: 50px;
         font-size: 0.875rem;
         font-weight: 700;
@@ -287,12 +294,12 @@
         font-size: 1.5rem;
         font-weight: 800;
         margin-bottom: 1rem;
-        color: #334155;
+        color: var(--text-primary);
         line-height: 1.4;
     }
 
     .story-desc {
-        color: #64748b;
+        color: var(--text-secondary);
         line-height: 1.8;
         margin-bottom: 1.5rem;
     }
@@ -315,12 +322,12 @@
     }
 
     .impact-label {
-        color: #64748b;
+        color: var(--text-secondary);
         font-weight: 600;
     }
 
     .impact-value {
-        color: #334155;
+        color: var(--text-primary);
         font-weight: 800;
         font-size: 1.125rem;
     }
@@ -328,83 +335,98 @@
     /* Campaigns Section */
     .campaigns-section {
         padding: 7rem 0;
-        background: white;
+        background: var(--bg-primary);
+    }
+
+    .campaigns-section .container {
+        max-width: 1200px;
+    }
+
+    .campaigns-section .grid-cols-3 {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 2rem !important;
     }
 
     .campaign-card {
-        background: white;
-        border-radius: 2rem;
+        background: var(--card-bg);
+        border-radius: 0.75rem;
         overflow: hidden;
-        box-shadow: 0 15px 50px rgba(51, 65, 85, 0.15);
-        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
         height: 100%;
-        border: 3px solid transparent;
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
     }
 
     .campaign-card:hover {
-        transform: translateY(-12px) scale(1.02);
-        box-shadow: 0 30px 70px rgba(51, 65, 85, 0.3);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
         border-color: #334155;
     }
 
     .campaign-image {
         width: 100%;
-        height: 280px;
+        height: 240px;
         object-fit: cover;
-        position: relative;
-        transition: transform 0.5s;
+        display: block;
     }
 
     .campaign-card:hover .campaign-image {
-        transform: scale(1.1);
+        opacity: 0.95;
     }
 
     .campaign-badge {
         position: absolute;
-        top: 1.5rem;
-        right: 1.5rem;
-        padding: 0.75rem 1.5rem;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
         border-radius: 50px;
-        font-size: 0.875rem;
-        font-weight: 800;
+        font-size: 0.75rem;
+        font-weight: 700;
         backdrop-filter: blur(10px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 10;
     }
 
     .campaign-content {
-        padding: 2.5rem;
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
     }
 
     .campaign-title {
-        font-size: 1.5rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-        color: #334155;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: var(--text-primary);
         line-height: 1.4;
+        min-height: 2.8rem;
     }
 
     .progress-bar-custom {
-        height: 12px;
-        background: #e2e8f0;
-        border-radius: 12px;
+        height: 8px;
+        background: var(--border-color);
+        border-radius: 10px;
         overflow: hidden;
-        margin: 1.5rem 0;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        margin: 1rem 0;
     }
 
     .progress-fill {
         height: 100%;
-        background: linear-gradient(90deg, #334155 0%, #475569 100%);
-        border-radius: 12px;
-        transition: width 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        box-shadow: 0 2px 8px rgba(51, 65, 85, 0.5);
+        background: #334155;
+        border-radius: 10px;
+        transition: width 1s ease;
     }
 
     .campaign-stats {
         display: flex;
         justify-content: space-between;
         font-size: 0.875rem;
-        color: #64748b;
+        color: var(--text-secondary);
+        margin-top: auto;
     }
 
     /* Testimonials */
@@ -542,7 +564,7 @@
     /* Trust Badges */
     .trust-section {
         padding: 5rem 0;
-        background: white;
+        background: var(--bg-primary);
         text-align: center;
     }
 
@@ -551,7 +573,7 @@
         align-items: center;
         gap: 1.5rem;
         padding: 2rem 3rem;
-        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        background: var(--card-bg);
         border-radius: 1.5rem;
         margin: 0 1rem 1rem;
         transition: all 0.3s;
@@ -574,18 +596,17 @@
     .trust-text strong {
         display: block;
         font-size: 1.25rem;
-        color: #334155;
+        color: var(--text-primary);
         margin-bottom: 0.25rem;
         font-weight: 800;
     }
 
     .trust-text span {
         font-size: 0.875rem;
-        color: #64748b;
+        color: var(--text-secondary);
     }
     .grid {
-        display: flex;
-        justify-content: space-between;
+        display: grid;
         gap: 2rem;
     }
 
@@ -593,15 +614,43 @@
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 2rem;
+        width: 100%;
+    }
+
+    .grid-cols-4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+    }
+
+    @media (max-width: 992px) {
+        .grid-cols-3 {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+        .grid-cols-4 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .campaigns-section .grid-cols-3 {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .grid-cols-3, .grid-cols-4 {
+            grid-template-columns: 1fr !important;
+        }
+        .campaigns-section .grid-cols-3 {
+            grid-template-columns: 1fr !important;
+        }
     }
 
     .process-step {
         text-align: center;
-        border: 2px solid #e0e0e0;
+        border: 2px solid var(--border-color);
         border-radius: 12px;
         padding: 2rem;
         transition: all 0.3s ease;
-        background-color: #fff;
+        background-color: var(--card-bg);
     }
 
     .process-step:hover {
@@ -624,7 +673,7 @@
     }
 
     .step-desc {
-        color: #666;
+        color: var(--text-secondary);
         line-height: 1.6;
     }    
 
@@ -861,54 +910,56 @@
         <div class="grid grid-cols-3">
             @foreach($campaigns as $campaign)
             <div class="campaign-card">
-                <div style="position: relative;">
+                <div style="position: relative; overflow: hidden;">
                     @if($campaign->is_verified)
-                        <span class="campaign-badge" style="background: rgba(16, 185, 129, 0.9); color: white;">
+                        <span class="campaign-badge" style="background: rgba(16, 185, 129, 0.95); color: white; font-size: 0.75rem; padding: 0.5rem 1rem;">
                             ✓ Verified
                         </span>
                     @endif
                     @if($campaign->is_urgent)
-                        <span class="campaign-badge" style="background: rgba(239, 68, 68, 0.9); color: white; top: 1rem; left: 1rem;">
+                        <span class="campaign-badge" style="background: rgba(239, 68, 68, 0.95); color: white; top: 1rem; left: 1rem; font-size: 0.75rem; padding: 0.5rem 1rem;">
                             🔥 Urgent
                         </span>
                     @endif
-                    <img src="{{ $campaign->image_path ? asset('storage/' . $campaign->image_path) : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=250&fit=crop' }}" 
+                    <img src="{{ $campaign->image_path ? asset('storage/' . $campaign->image_path) : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=250&fit=crop' }}"
                          alt="{{ $campaign->title }}" class="campaign-image">
                 </div>
 
                 <div class="campaign-content">
-                    <span class="badge badge-info" style="margin-bottom: 1rem;">{{ $campaign->category->name }}</span>
-                    <h3 class="campaign-title">{{ Str::limit($campaign->title, 60) }}</h3>
-                    <p style="color: #64748b; margin-bottom: 1.5rem; line-height: 1.6;">
-                        {{ Str::limit($campaign->description, 100) }}
-                    </p>
+                    <div>
+                        <span class="badge badge-info" style="margin-bottom: 0.75rem; display: inline-block; font-size: 0.75rem;">{{ $campaign->category->name }}</span>
+                        <h3 class="campaign-title">{{ Str::limit($campaign->title, 50) }}</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5; font-size: 0.9rem;">
+                            {{ Str::limit($campaign->description, 80) }}
+                        </p>
+                    </div>
 
-                    <div class="campaign-progress">
+                    <div>
                         <div class="progress-bar-custom">
                             <div class="progress-fill" style="width: {{ $campaign->progressPercentage() }}%"></div>
                         </div>
-                        <div class="campaign-stats">
+                        <div class="campaign-stats" style="margin-bottom: 1rem;">
                             <div>
-                                <strong style="font-size: 1.125rem; color: #334155;">${{ number_format($campaign->current_amount, 0) }}</strong>
-                                <span>raised of ${{ number_format($campaign->goal_amount, 0) }}</span>
+                                <strong style="font-size: 1rem; color: var(--text-primary); display: block;">${{ number_format($campaign->current_amount, 0) }}</strong>
+                                <span style="font-size: 0.8rem;">of ${{ number_format($campaign->goal_amount, 0) }}</span>
                             </div>
-                            <div>
-                                <strong style="font-size: 1.125rem; color: #334155;">{{ $campaign->daysRemaining() }}</strong>
-                                <span>days left</span>
+                            <div style="text-align: right;">
+                                <strong style="font-size: 1rem; color: var(--text-primary); display: block;">{{ $campaign->daysRemaining() }}</strong>
+                                <span style="font-size: 0.8rem;">days left</span>
                             </div>
                         </div>
-                    </div>
 
-                    <a href="{{ route('campaigns.show', $campaign) }}" class="btn btn-primary" style="width: 100%; margin-top: 1rem; background: #334155;">
-                        View Campaign →
-                    </a>
+                        <a href="{{ route('campaigns.show', $campaign) }}" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 0.95rem; background: #334155; text-align: center; display: block; text-decoration: none; border-radius: 0.5rem;">
+                            View Campaign →
+                        </a>
+                    </div>
                 </div>
             </div>
             @endforeach
         </div>
 
         <div style="text-align: center; margin-top: 3rem;">
-            <a href="{{ route('campaigns.index') }}" class="btn btn-outline" style="padding: 1rem 3rem; font-size: 1.125rem; border: 3px solid #334155; color: #334155;">
+            <a href="{{ route('campaigns.index') }}" class="btn btn-outline" style="padding: 1rem 3rem; font-size: 1.125rem; border: 3px solid #334155; color: var(--text-primary);">
                 View All Campaigns →
             </a>
         </div>
@@ -974,7 +1025,7 @@
 <!-- Trust Badges -->
 <section class="trust-section">
     <div class="container">
-        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem; color: #334155;">
+        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem; color: var(--text-primary);">
             Trusted by Thousands
         </h3>
         <div>

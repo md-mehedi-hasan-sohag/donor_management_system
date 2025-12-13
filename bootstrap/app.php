@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
     })
+    ->withSchedule(function ($schedule): void {
+        // Run campaign expiry check daily at midnight
+        $schedule->command('campaigns:expire')->daily();
+    })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

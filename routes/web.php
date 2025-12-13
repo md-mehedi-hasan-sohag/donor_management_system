@@ -3,9 +3,13 @@
 // routes/web.php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BkashPaymentController;
+use App\Http\Controllers\NagadPaymentController;
+use App\Http\Controllers\CampaignQuestionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\DonationHistoryController;
 use App\Http\Controllers\CampaignCommentController;
 use App\Http\Controllers\RecipientVerificationController;
 use App\Http\Controllers\Admin\CampaignApprovalController;
@@ -18,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', function () {
-    $campaigns = \App\Models\Campaign::active()->latest()->take(6)->get();
+    $campaigns = \App\Models\Campaign::active()->latest()->take(3)->get();
     $categories = \App\Models\Category::all();
     $stats = [
         'total_raised' => \App\Models\Donation::completed()->sum('amount'),
@@ -52,6 +56,7 @@ Route::get('/debug-user', function () {
 Route::get('/campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
 Route::get('/campaigns/create', [CampaignController::class, 'create'])->name('campaigns.create')->middleware('auth');
 Route::get('/campaigns/{campaign}', [CampaignController::class, 'show'])->name('campaigns.show');
+Route::get('/campaigns/{campaign}/qr-code', [CampaignController::class, 'downloadQr'])->name('campaigns.qr-code');
 
 /*
 |--------------------------------------------------------------------------
@@ -99,9 +104,31 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/campaigns/{campaign}/donate', [DonationController::class, 'store'])->name('donations.store');
     Route::get('/donations/{donation}/receipt', [DonationController::class, 'receipt'])->name('donations.receipt');
 
+    // bKash Payment Routes
+    Route::get('/campaigns/{campaign}/bkash-payment', [BkashPaymentController::class, 'show'])->name('bkash.payment');
+    Route::post('/campaigns/{campaign}/bkash-payment', [BkashPaymentController::class, 'process'])->name('bkash.process');
+    Route::get('/bkash-payment/success/{donation}', [BkashPaymentController::class, 'success'])->name('bkash.success');
+    Route::get('/campaigns/{campaign}/bkash-payment/failed', [BkashPaymentController::class, 'failed'])->name('bkash.failed');
+
+    // Nagad Payment Routes
+    Route::get('/campaigns/{campaign}/nagad-payment', [NagadPaymentController::class, 'show'])->name('nagad.payment');
+    Route::post('/campaigns/{campaign}/nagad-payment', [NagadPaymentController::class, 'process'])->name('nagad.process');
+    Route::get('/nagad-payment/success/{donation}', [NagadPaymentController::class, 'success'])->name('nagad.success');
+    Route::get('/campaigns/{campaign}/nagad-payment/failed', [NagadPaymentController::class, 'failed'])->name('nagad.failed');
+
+    // Donation History PDF Downloads
+    Route::get('/donation-history/pdf', [DonationHistoryController::class, 'downloadDonorHistory'])->name('donation-history.pdf');
+    Route::get('/campaigns/{campaign}/donation-history/pdf', [DonationHistoryController::class, 'downloadCampaignHistory'])->name('campaign-donation-history.pdf');
+
     // Comments
     Route::post('/campaigns/{campaign}/comments', [CampaignCommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{comment}', [CampaignCommentController::class, 'destroy'])->name('comments.destroy');
+
+    // Campaign Questions (Q&A)
+    Route::post('/campaigns/{campaign}/questions', [CampaignQuestionController::class, 'store'])->name('questions.store');
+    Route::post('/campaigns/{campaign}/questions/{question}/answer', [CampaignQuestionController::class, 'answer'])->name('questions.answer');
+    Route::post('/campaigns/{campaign}/questions/{question}/toggle-pin', [CampaignQuestionController::class, 'togglePin'])->name('questions.toggle-pin');
+    Route::delete('/campaigns/{campaign}/questions/{question}', [CampaignQuestionController::class, 'destroy'])->name('questions.destroy');
 
     // Recipient Verification
     Route::get('/verification', [RecipientVerificationController::class, 'index'])->name('verification.index');
@@ -128,6 +155,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/users/{user}/activate', [UserManagementController::class, 'activate'])->name('users.activate');
     Route::post('/users/{user}/change-role', [UserManagementController::class, 'changeRole'])->name('users.change-role');
     Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
+    Route::get('/users/{user}/donation-history/pdf', [DonationHistoryController::class, 'downloadDonorHistory'])->name('users.donation-history.pdf');
 
     // Verification Management
     Route::get('/verifications', [VerificationController::class, 'index'])->name('verifications.index');

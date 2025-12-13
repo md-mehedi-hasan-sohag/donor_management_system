@@ -13,10 +13,100 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Global Theme CSS -->
+    <link href="{{ asset('css/theme.css') }}" rel="stylesheet">
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
 <style>
+    /* ============================================
+       THEME VARIABLES - Light & Dark Mode
+    ============================================ */
+    :root {
+        /* Light Mode Colors */
+        --bg-primary: #ffffff;
+        --bg-secondary: #f9fafb;
+        --bg-tertiary: #f3f4f6;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --text-tertiary: #9ca3af;
+        --border-color: #e5e7eb;
+        --card-bg: #ffffff;
+        --card-shadow: rgba(0, 0, 0, 0.1);
+        --navbar-bg: linear-gradient(135deg, #334155 0%, #475569 50%, #64748b 100%);
+        --navbar-text: #ffffff;
+        --footer-bg: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+        --footer-text: #ffffff;
+        --input-bg: #ffffff;
+        --input-border: #d1d5db;
+        --overlay-bg: rgba(0, 0, 0, 0.5);
+
+        /* Color Palette */
+        --primary: #4F46E5;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --info: #3b82f6;
+
+        /* Gray Scale */
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
+    }
+
+    [data-theme="dark"] {
+        /* Dark Mode Colors */
+        --bg-primary: #1f2937;
+        --bg-secondary: #111827;
+        --bg-tertiary: #374151;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --text-tertiary: #9ca3af;
+        --border-color: #374151;
+        --card-bg: #374151;
+        --card-shadow: rgba(0, 0, 0, 0.3);
+        --navbar-bg: linear-gradient(135deg, #111827 0%, #1f2937 50%, #374151 100%);
+        --navbar-text: #f9fafb;
+        --footer-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        --footer-text: #f9fafb;
+        --input-bg: #374151;
+        --input-border: #4b5563;
+        --overlay-bg: rgba(0, 0, 0, 0.7);
+
+        /* Color Palette - Slightly adjusted for dark mode */
+        --primary: #6366f1;
+        --success: #10b981;
+        --danger: #f87171;
+        --warning: #fbbf24;
+        --info: #60a5fa;
+
+        /* Gray Scale - Inverted for dark mode */
+        --gray-50: #111827;
+        --gray-100: #1f2937;
+        --gray-200: #374151;
+        --gray-300: #4b5563;
+        --gray-400: #6b7280;
+        --gray-500: #9ca3af;
+        --gray-600: #d1d5db;
+        --gray-700: #e5e7eb;
+        --gray-800: #f3f4f6;
+        --gray-900: #f9fafb;
+    }
+
+    /* Apply theme colors to body */
+    body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
 
     #app {
     display: flex;
@@ -67,13 +157,14 @@ main {
 
     /* Navbar Styles */
     .custom-navbar {
-        background: linear-gradient(135deg, #334155 0%, #475569 50%, #64748b 100%);
+        background: var(--navbar-bg);
         padding: 1.25rem 0;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 20px var(--card-shadow);
         position: sticky;
         top: 0;
         z-index: 1000;
         border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+        transition: background 0.3s ease;
     }
 
     .navbar-brand-custom {
@@ -201,14 +292,37 @@ main {
         color: #334155;
     }
 
+    /* Theme Toggle Button */
+    .theme-toggle {
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1.25rem;
+    }
+
+    .theme-toggle:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: rotate(180deg) scale(1.1);
+    }
+
     /* Footer Styles */
     .footer {
-        background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
-        color: white;
+        background: var(--footer-bg);
+        color: var(--footer-text);
         padding: 4rem 0 2rem;
         position: relative;
         overflow: hidden;
         margin-top: auto;
+        transition: background 0.3s ease;
     }
 
     .footer::before {
@@ -513,6 +627,11 @@ main {
 
                     <!-- Right: Auth Buttons -->
                     <div class="nav-buttons">
+                        <!-- Theme Toggle -->
+                        <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
+                            <span id="theme-icon">🌙</span>
+                        </button>
+
                         @guest
                             <a href="{{ route('login') }}" class="nav-btn nav-btn-login">
                                 Login
@@ -530,8 +649,21 @@ main {
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end">
                                     <li>
+                                        <a class="dropdown-item dropdown-item-custom" href="{{ route('dashboard') }}">
+                                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 0.5rem;">
+                                                <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"/>
+                                            </svg>
+                                            Dashboard
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider" style="margin: 0.5rem 0; border-color: var(--border-color);"></li>
+                                    <li>
                                         <a class="dropdown-item dropdown-item-custom" href="{{ route('logout') }}"
                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 0.5rem;">
+                                                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                                                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                                            </svg>
                                             Logout
                                         </a>
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -672,5 +804,41 @@ main {
             </div>
         </footer>
     </div>
+
+    <!-- Theme Switching Script -->
+    <script>
+        // Theme switching functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            const htmlElement = document.documentElement;
+
+            // Check for saved theme preference or default to light mode
+            const currentTheme = localStorage.getItem('theme') || 'light';
+
+            // Apply the current theme on page load
+            htmlElement.setAttribute('data-theme', currentTheme);
+            updateThemeIcon(currentTheme);
+
+            // Toggle theme on button click
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = htmlElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+
+            // Update theme icon based on current theme
+            function updateThemeIcon(theme) {
+                if (theme === 'dark') {
+                    themeIcon.textContent = '☀️'; // Sun icon for dark mode (click to go light)
+                } else {
+                    themeIcon.textContent = '🌙'; // Moon icon for light mode (click to go dark)
+                }
+            }
+        })();
+    </script>
 </body>
 </html>
