@@ -30,6 +30,8 @@ class CampaignController extends Controller
         $campaign->load('user', 'category', 'updates', 'comments.user', 'donations', 'questions.user');
         $similarCampaigns = $this->campaignService->getSimilarCampaigns($campaign);
 
+        $campaign->increment('views');
+
         return view('campaigns.show', compact('campaign', 'similarCampaigns'));
     }
 
@@ -152,4 +154,7 @@ class CampaignController extends Controller
             ->header('Content-Type', 'image/svg+xml')
             ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
+
+
+
 }

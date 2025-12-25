@@ -34,7 +34,6 @@ class DonationController extends Controller
             'in_kind_items' => 'nullable|string',
         ]);
 
-        // Store donation data in session for payment processing
         session([
             'pending_donation' => [
                 'campaign_id' => $campaign->id,
@@ -43,25 +42,22 @@ class DonationController extends Controller
             ]
         ]);
 
-        // If payment method is bKash, redirect to bKash payment page
         if (($validated['payment_method'] ?? 'card') === 'bkash') {
             return redirect()->route('bkash.payment', $campaign);
         }
 
-        // If payment method is Nagad, redirect to Nagad payment page
         if (($validated['payment_method'] ?? 'card') === 'nagad') {
             return redirect()->route('nagad.payment', $campaign);
         }
 
-        // For card or in-kind donations, process directly
         $validated['payment_method'] = $validated['payment_method'] ?? 'card';
+
         $donation = $this->donationService->processDonation(
             $campaign,
             auth()->user(),
             $validated
         );
 
-        // Clear session data
         session()->forget('pending_donation');
 
         return redirect()->route('donations.receipt', $donation)

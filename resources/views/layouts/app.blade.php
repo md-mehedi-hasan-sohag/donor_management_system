@@ -18,7 +18,7 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    
 <style>
     /* ============================================
        THEME VARIABLES - Light & Dark Mode
@@ -656,6 +656,21 @@ main {
                                             Dashboard
                                         </a>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item dropdown-item-custom" href="{{ route('volunteer.dashboard') }}">
+                                            🤝 Volunteer Dashboard
+                                        </a>
+                                    </li>
+
+
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('saved-campaigns.index') }}">
+                                            ❤️ Saved Campaigns
+                                        </a>
+                                    </li>
+
+
+
                                     <li><hr class="dropdown-divider" style="margin: 0.5rem 0; border-color: var(--border-color);"></li>
                                     <li>
                                         <a class="dropdown-item dropdown-item-custom" href="{{ route('logout') }}"

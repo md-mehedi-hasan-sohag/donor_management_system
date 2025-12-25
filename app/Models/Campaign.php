@@ -242,4 +242,13 @@ class Campaign extends Model
             default => '<span class="badge badge-secondary">' . ucfirst($this->status) . '</span>',
         };
     }
+
+    public function savedByUsers()
+    {
+        return $this->belongsToMany(
+            \App\Models\User::class,
+            'saved_campaigns'
+        )->withTimestamps();
+    }
+
 }

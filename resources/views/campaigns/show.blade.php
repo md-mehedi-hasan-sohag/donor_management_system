@@ -160,7 +160,10 @@
                         <h3 style="font-weight: 600; margin-bottom: 1rem; color: #1e40af;">👋 Volunteers Needed</h3>
                         <p style="color: #1e40af;">This campaign is looking for volunteers. Sign up to help make a difference!</p>
                         @auth
-                            <button class="btn btn-primary mt-2">🙋 Sign Up as Volunteer</button>
+                            <a href="#volunteer-signup" class="btn btn-primary mt-2">
+                                🙋 Sign Up as Volunteer
+                            </a>
+
                         @endauth
                     </div>
                 @endif
@@ -213,6 +216,11 @@
                     <p style="text-align: center; color: var(--gray-500); padding: 2rem;">No comments yet. Be the first to comment!</p>
                 @endforelse
             </div>
+
+            <div class="text-muted mb-2">
+                👁️ {{ number_format($campaign->views) }} views
+            </div>
+
 
             <!-- Tab: Q&A -->
             <div id="qa-tab" class="tab-content">
@@ -422,6 +430,64 @@
 
                 <button class="btn btn-secondary" style="width: 100%; margin-top: 0.75rem;">📤 Share</button>
 
+                @if(auth()->user()->savedCampaigns->contains($campaign->id))
+                    <form method="POST"
+                            action="{{ route('campaigns.unsave', $campaign) }}"
+                            class="mt-2">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-outline-danger w-100">
+                            💔 Remove from Saved
+                        </button>
+                    </form>
+                @else
+                    <form method="POST"
+                            action="{{ route('campaigns.save', $campaign) }}"
+                            class="mt-2">
+                        @csrf
+                        <button class="btn btn-outline-primary w-100">
+                            ❤️ Save Campaign
+                        </button>
+                    </form>
+                @endif
+            @endauth
+
+    
+
+
+                {{-- Fraud Report Section --}}
+                <hr style="margin: 1.5rem 0;">
+
+                @auth
+                <form action="{{ route('fraud.report') }}" method="POST">
+                    @csrf
+
+                    <input type="hidden" name="campaign_id" value="{{ $campaign->id }}">
+
+                    <div style="background: #fef2f2; padding: 1rem; border-radius: 0.5rem; border: 1px solid #fecaca;">
+                        <h4 style="color: #b91c1c; margin-bottom: 0.5rem;">🚨 Report Campaign</h4>
+
+                        <textarea
+                            name="reason"
+                            class="form-control mb-2"
+                            rows="3"
+                            placeholder="Explain why this campaign seems suspicious"
+                            required></textarea>
+
+                        <button type="submit" class="btn btn-danger btn-sm" style="width: 100%;">
+                            Submit Report
+                        </button>
+                    </div>
+                </form>
+                @endauth
+
+                @guest
+                <p style="font-size: 0.875rem; color: #92400e; text-align: center;">
+                    <a href="{{ route('login') }}">Login</a> to report this campaign
+                </p>
+                @endguest
+
+
                 @if((auth()->user()->isAdmin() || $campaign->user_id === auth()->id()) && $campaign->total_donors > 0)
                 <a href="{{ route('campaign-donation-history.pdf', $campaign) }}" class="btn btn-outline" style="width: 100%; margin-top: 0.75rem;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-file-earmark-pdf" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 0.25rem;">
@@ -431,7 +497,7 @@
                     Download Donation History
                 </a>
                 @endif
-            @else
+            @guest
                 @if($campaign->canAcceptDonations())
                     <a href="{{ route('login') }}" class="btn btn-primary" style="width: 100%; font-size: 1.125rem; padding: 1rem;">Donate Now</a>
                 @else
@@ -439,6 +505,7 @@
                         {{ $campaign->isArchived() ? 'Campaign Archived' : 'Campaign Ended' }}
                     </button>
                 @endif
+
             @endauth
         </div>
 
@@ -514,5 +581,59 @@
         document.getElementById(tab + '-tab').classList.add('active');
         event.target.classList.add('active');
     }
+//volunteer Signup
 </script>
+<hr style="margin: 3rem 0;">
+
+<div id="volunteer-signup" style="
+    background: #f8fafc;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+">
+
+    <h3 style="margin-bottom: 1rem;">🤝 Volunteer for this Campaign</h3>
+
+    @auth
+        <form action="{{ route('volunteer.signup') }}" method="POST">
+            @csrf
+
+            <input type="hidden" name="campaign_id" value="{{ $campaign->id }}">
+
+            <div class="mb-3">
+                <label>Name</label>
+                <input type="text" name="name" class="form-control"
+                       value="{{ auth()->user()->name }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email" name="email" class="form-control"
+                       value="{{ auth()->user()->email }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Phone</label>
+                <input type="text" name="phone" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Message (optional)</label>
+                <textarea name="message" class="form-control"
+                          placeholder="Why do you want to volunteer?"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">
+                Apply as Volunteer
+            </button>
+        </form>
+    @endauth
+
+    @guest
+        <p style="color: #92400e;">
+            Please <a href="{{ route('login') }}">log in</a> to apply as a volunteer.
+        </p>
+    @endguest
+</div>
+
 @endsection

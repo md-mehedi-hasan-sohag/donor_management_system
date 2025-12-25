@@ -173,4 +173,13 @@ class User extends Authenticatable
             ->distinct('campaign_id')
             ->count('campaign_id');
     }
+
+    public function savedCampaigns()
+    {
+        return $this->belongsToMany(
+            \App\Models\Campaign::class,
+            'saved_campaigns'
+        )->withTimestamps();
+    }
+
 }

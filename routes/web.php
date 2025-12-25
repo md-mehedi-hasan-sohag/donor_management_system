@@ -18,6 +18,11 @@ use App\Http\Controllers\Admin\VerificationController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VolunteerSignupController;
+use App\Http\Controllers\VolunteerDashboardController;
+use App\Http\Controllers\FraudReportController;
+use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\SavedCampaignController;
 
 
 
@@ -184,3 +189,63 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 |     'admin' => \App\Http\Middleware\AdminMiddleware::class,
 | ];
 */
+
+
+// Volunteer Signup Route
+
+Route::post('/volunteer/signup', [VolunteerSignupController::class, 'store'])
+    ->middleware('auth')
+    ->name('volunteer.signup');
+
+
+// Volunteer Dashboard Route
+Route::middleware(['auth'])->group(function () {
+    Route::get('/volunteer/dashboard', [VolunteerDashboardController::class, 'index'])
+        ->name('volunteer.dashboard');
+});
+
+
+// Fraud Report Route
+Route::post('/fraud-report', [FraudReportController::class, 'store'])
+    ->name('fraud.report')
+    ->middleware('auth');
+
+
+
+    // Receipt Route
+Route::middleware('auth')->group(function () {
+
+    Route::post('/campaigns/{campaign}/receipt',
+        [ReceiptController::class, 'store']
+    )->name('receipts.store');
+
+    Route::get('/receipts',
+        [ReceiptController::class, 'index']
+    )->name('receipts.index');
+
+    Route::get('/receipts/{receipt}',
+        [ReceiptController::class, 'show']
+    )->name('receipts.show');
+});
+
+
+// Saved Campaign Route
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/saved-campaigns', 
+        [SavedCampaignController::class, 'index']
+    )->name('saved-campaigns.index');
+
+    Route::post('/campaigns/{campaign}/save', 
+        [SavedCampaignController::class, 'store']
+    )->name('campaigns.save');
+
+    Route::delete('/campaigns/{campaign}/unsave', 
+        [SavedCampaignController::class, 'destroy']
+    )->name('campaigns.unsave');
+
+});
+
+
+
