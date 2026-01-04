@@ -213,20 +213,10 @@ Route::post('/fraud-report', [FraudReportController::class, 'store'])
 
 
     // Receipt Route
-Route::middleware('auth')->group(function () {
-
-    Route::post('/campaigns/{campaign}/receipt',
-        [ReceiptController::class, 'store']
-    )->name('receipts.store');
-
-    Route::get('/receipts',
-        [ReceiptController::class, 'index']
-    )->name('receipts.index');
-
-    Route::get('/receipts/{receipt}',
-        [ReceiptController::class, 'show']
-    )->name('receipts.show');
-});
+Route::post(
+    '/campaigns/{campaign}/receipt',
+    [ReceiptController::class, 'store']
+)->middleware('auth')->name('receipts.store');
 
 
 // Saved Campaign Route

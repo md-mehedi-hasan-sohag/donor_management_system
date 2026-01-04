@@ -2,61 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Receipt;
 use App\Models\Campaign;
+use App\Models\Receipt;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ReceiptController extends Controller
 {
-    /**
-     * Show inbox
-     */
-    public function index()
-    {
-        $receipts = Receipt::where('user_id', Auth::id())
-            ->latest()
-            ->get();
-
-        return view('receipts.index', compact('receipts'));
-    }
-
-    /**
-     * Generate receipt from campaign page
-     */
     public function store(Campaign $campaign)
     {
-        Receipt::create([
-            'user_id'     => Auth::id(),
-            'campaign_id' => $campaign->id,
-            'subject'     => 'Donation Receipt - DonorLink',
-            'body'        => nl2br(
-                "Thank you for your support!\n\n" .
-                "This is a demo email receipt.\n\n" .
-                "Campaign: {$campaign->title}\n" .
-                "Amount: ৳1,000\n" .
-                "Payment Method: Demo\n\n" .
-                "— DonorLink Team"
-            ),
-            'is_read'     => false,
-        ]);
+        $user = auth()->user();
 
-        return redirect()
-            ->route('receipts.index')
-            ->with('success', 'Receipt generated successfully!');
-    }
+        // ✅ CHECK: user must have a completed donation
+        $hasDonated = $campaign->donations()
+            ->where('user_id', $user->id)
+            ->exists();
 
-    /**
-     * Show single receipt
-     */
-    public function show(Receipt $receipt)
-    {
-        abort_unless($receipt->user_id === Auth::id(), 403);
-
-        if (!$receipt->is_read) {
-            $receipt->update(['is_read' => true]);
+        if (!$hasDonated) {
+            abort(403, 'Only donors can generate receipts.');
         }
 
-        return view('receipts.show', compact('receipt'));
+        // ✅ Prevent duplicate receipt
+        $alreadyGenerated = Receipt::where('user_id', $user->id)
+            ->where('campaign_id', $campaign->id)
+            ->exists();
+
+        if ($alreadyGenerated) {
+            return back()->with('info', 'Receipt already generated.');
+        }
+
+        // ✅ Create receipt
+        Receipt::create([
+            'user_id'     => $user->id,
+            'campaign_id' => $campaign->id,
+            'subject'     => 'Donation Receipt Generated',
+            'body'        => "Receipt has been generated for the campaign '{$campaign->title}'.",
+        ]);
+
+        return back()->with('success', 'Receipt generated successfully.');
     }
 }

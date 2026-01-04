@@ -665,7 +665,7 @@ main {
 
                                     <li class="nav-item">
                                         <a class="nav-link" href="{{ route('saved-campaigns.index') }}">
-                                            ❤️ Saved Campaigns
+                                            🚩 Flagged Campaigns
                                         </a>
                                     </li>
 
