@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4">❤️ My Saved Campaigns</h2>
+    <h2 class="mb-4">🚩 Flagged Campaigns</h2>
 
     @if(session('success'))
         <div class="alert alert-success">
@@ -41,7 +41,7 @@
 
         {{ $campaigns->links() }}
     @else
-        <p>You haven’t saved any campaigns yet.</p>
+        <p>You haven’t flagged any campaigns yet.</p>
     @endif
 </div>
 @endsection

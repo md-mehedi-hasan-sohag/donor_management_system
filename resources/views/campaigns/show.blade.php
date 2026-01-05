@@ -431,6 +431,33 @@
                     </button>
                 @endif
 
+                {{-- Receipt Generation --}}
+                @php
+                    $hasDonated = $campaign->donations()
+                        ->where('user_id', auth()->id())
+                        ->exists();
+
+                    $hasReceipt = \App\Models\Receipt::where('user_id', auth()->id())
+                        ->where('campaign_id', $campaign->id)
+                        ->exists();
+                @endphp
+
+                @if($hasDonated)
+                    @if($hasReceipt)
+                        <button class="btn btn-success w-100 mt-2" disabled>
+                            🧾 Receipt Generated
+                        </button>
+                    @else
+                        <form action="{{ route('receipts.store', $campaign) }}" method="POST" class="mt-2">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-success w-100">
+                                🧾 Generate Receipt
+                            </button>
+                        </form>
+                    @endif
+                @endif
+
+
                 <form action="{{ route('campaigns.follow', $campaign) }}" method="POST" style="margin-top: 0.75rem;">
                     @csrf
                     @if(auth()->user()->followedCampaigns->contains($campaign->id))
@@ -449,7 +476,7 @@
                         @csrf
                         @method('DELETE')
                         <button class="btn btn-outline-danger w-100">
-                            💔 Remove from Saved
+                            🚩 Removed Flag
                         </button>
                     </form>
                 @else
@@ -458,7 +485,7 @@
                             class="mt-2">
                         @csrf
                         <button class="btn btn-outline-primary w-100">
-                            ❤️ Save Campaign
+                            🚩 Flag Campaign
                         </button>
                     </form>
                 @endif
