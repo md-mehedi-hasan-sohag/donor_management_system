@@ -616,6 +616,16 @@ main {
 </head>
 <body>
     <div id="app">
+
+         <!-- Success Message  -->
+
+        @if (session('success'))
+            <div class="alert alert-success">
+               {{ session('success') }}
+            </div>
+        @endif
+
+
         <!-- Navbar -->
         <nav class="custom-navbar">
             <div class="container">

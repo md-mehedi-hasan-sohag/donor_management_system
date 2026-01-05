@@ -115,7 +115,7 @@
         @if($campaign->isCompleted())
             <div style="background: #dbeafe; padding: 1rem; border-radius: 0.5rem; border-left: 4px solid #3b82f6; margin-top: 1rem;">
                 <strong style="color: #1e40af;">Campaign Completed</strong>
-                <p style="margin: 0.5rem 0 0 0; color: #1e40af;">This campaign ended on {{ $campaign->completed_at->format('F d, Y') }}. Final amount raised: <strong>${{ number_format($campaign->current_amount, 2) }}</strong> ({{ number_format($campaign->progressPercentage(), 1) }}% of goal)</p>
+                <p style="margin: 0.5rem 0 0 0                                                      ; color: #1e40af;">This campaign ended on {{ $campaign->completed_at->format('F d, Y') }}. Final amount raised: <strong>${{ number_format($campaign->current_amount, 2) }}</strong> ({{ number_format($campaign->progressPercentage(), 1) }}% of goal)</p>
             </div>
         @endif
 
@@ -132,6 +132,18 @@
     <div>
         <div class="campaign-main">
             <img src="{{ $campaign->image_path ? asset('storage/' . $campaign->image_path) : 'https://via.placeholder.com/800x400?text=Campaign+Image' }}" alt="{{ $campaign->title }}" class="campaign-image">
+
+            <!-- Check if the logged-in user is the recipient of the campaign -->
+            @auth
+                @if(auth()->user()->id === $campaign->recipient_id)
+                    <form action="{{ route('campaigns.reminder', $campaign) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 2rem;">
+                            Set Reminder
+                        </button>
+                    </form>
+                @endif
+            @endauth
 
             <!-- Tabs -->
             <div class="tab-nav">

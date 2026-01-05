@@ -18,11 +18,13 @@ use App\Http\Controllers\Admin\VerificationController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\VolunteerSignupController;
 use App\Http\Controllers\VolunteerDashboardController;
 use App\Http\Controllers\FraudReportController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\SavedCampaignController;
+use App\Http\Controllers\CampaignReminderController;
 
 
 
@@ -39,8 +41,8 @@ Route::get('/', function () {
 
 // Temporary debug route - remove after testing
 Route::get('/debug-user', function () {
-    if (auth()->check()) {
-        $user = auth()->user();
+    if (Auth::check()) {
+        $user = Auth::user();
         return response()->json([
             'logged_in' => true,
             'user_id' => $user->id,
@@ -94,6 +96,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 |--------------------------------------------------------------------------
 */
 
+
 Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -103,7 +106,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/campaigns/{campaign}/edit', [CampaignController::class, 'edit'])->name('campaigns.edit');
     Route::put('/campaigns/{campaign}', [CampaignController::class, 'update'])->name('campaigns.update');
     Route::post('/campaigns/{campaign}/follow', [CampaignController::class, 'follow'])->name('campaigns.follow');
-
     // Donations
     Route::get('/campaigns/{campaign}/donate', [DonationController::class, 'create'])->name('donations.create');
     Route::post('/campaigns/{campaign}/donate', [DonationController::class, 'store'])->name('donations.store');
@@ -246,6 +248,15 @@ Route::middleware('auth')->group(function () {
     )->name('campaigns.unsave');
 
 });
+
+
+// Campaign Reminder (Authenticated Routes)
+Route::middleware(['auth'])->group(function () {
+    // Route to store the reminder message
+    Route::post('/campaigns/{campaign}/reminder', [CampaignReminderController::class, 'store'])
+        ->name('campaigns.reminder');
+});
+
 
 
 
