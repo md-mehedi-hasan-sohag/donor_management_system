@@ -186,7 +186,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 |--------------------------------------------------------------------------
 | Middleware Definition (Add to app/Http/Kernel.php)
 |--------------------------------------------------------------------------
-| 
+|
 | protected $middlewareAliases = [
 |     'admin' => \App\Http\Middleware\AdminMiddleware::class,
 | ];
@@ -225,15 +225,15 @@ Route::post(
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/saved-campaigns', 
+    Route::get('/saved-campaigns',
         [SavedCampaignController::class, 'index']
     )->name('saved-campaigns.index');
 
-    Route::post('/campaigns/{campaign}/save', 
+    Route::post('/campaigns/{campaign}/save',
         [SavedCampaignController::class, 'store']
     )->name('campaigns.save');
 
-    Route::delete('/campaigns/{campaign}/unsave', 
+    Route::delete('/campaigns/{campaign}/unsave',
         [SavedCampaignController::class, 'destroy']
     )->name('campaigns.unsave');
 
@@ -241,11 +241,14 @@ Route::middleware('auth')->group(function () {
 
 
 // Campaign Reminder (Authenticated Routes)
-Route::middleware(['auth'])->group(function () {
-    // Route to store the reminder message
-    Route::post('/campaigns/{campaign}/reminder', [CampaignReminderController::class, 'store'])
-        ->name('campaigns.reminder');
-});
+Route::post('/campaigns/{campaign}/reminder', [CampaignReminderController::class, 'store'])
+    ->middleware('auth')
+    ->name('campaign.reminder.store');
+
+
+
+
+
 
 
 

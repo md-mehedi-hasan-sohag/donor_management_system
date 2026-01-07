@@ -94,6 +94,13 @@
         border-radius: 0.5rem;
         margin-bottom: 1rem;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+
+     @if(session('success'))
+        <div class="alert alert-success">
+                {{ session('success') }}
+        </div>
+        @endif
+
     }
 </style>
 
@@ -135,10 +142,11 @@
 
             <!-- Check if the logged-in user is the recipient of the campaign -->
             @auth
-                @if(auth()->user()->id === $campaign->recipient_id)
-                    <form action="{{ route('campaigns.reminder', $campaign) }}" method="POST">
+                @if(Auth::check() && Auth::id() === $campaign->recipient_id)
+                    <form method="POST" action="{{ route('campaign.reminder.store', $campaign->id) }}">
+
                         @csrf
-                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 2rem;">
+                        <button type="submit" class="btn btn-warning mt-3">
                             Set Reminder
                         </button>
                     </form>
@@ -491,7 +499,7 @@
                 @endif
             @endauth
 
-    
+
 
 
                 {{-- Fraud Report Section --}}
