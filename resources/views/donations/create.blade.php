@@ -79,7 +79,7 @@
     <div class="donation-summary">
         <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem;">Support This Campaign</h1>
         <h2 style="font-size: 1.25rem; margin-bottom: 1.5rem; opacity: 0.9;">{{ $campaign->title }}</h2>
-        
+
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
             <div>
                 <div style="font-size: 1.5rem; font-weight: 700;">${{ number_format($campaign->current_amount, 0) }}</div>
@@ -112,7 +112,7 @@
                             <small style="color: var(--gray-600);">Make a monetary contribution</small>
                         </div>
                     </label>
-                    
+
                     @if($campaign->accepts_in_kind)
                     <label class="payment-method" onclick="selectDonationType('in_kind')">
                         <input type="radio" name="donation_type" value="in_kind" style="display: none;">
@@ -154,6 +154,22 @@
 
                 <div class="form-group">
                     <label class="form-label">Or enter custom amount</label>
+                    <!-- Currency Display Selector (Display Only) -->
+            <div class="form-group">
+                <label class="form-label">Display Currency</label>
+                <select id="displayCurrency" class="form-control">
+                    @foreach($currencies as $currency)
+                        <option value="{{ $currency->code }}"
+                                data-rate="{{ $currency->rate_to_bdt }}">
+                            {{ $currency->code }} – {{ $currency->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <small style="color: var(--gray-600);">
+                    Amount will be charged in BDT. Currency is for display only.
+                </small>
+            </div>
+
                     <div style="position: relative;">
                         <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.25rem; font-weight: 600; color: var(--gray-600);">$</span>
                         <input type="number" name="amount" id="amountInput" class="form-control" style="padding-left: 2.5rem; font-size: 1.25rem; font-weight: 600;" placeholder="0.00" min="5" step="0.01" oninput="updateBreakdown()">
@@ -165,6 +181,10 @@
                     <h3 style="font-weight: 600; margin-bottom: 1rem; color: #065f46;">💚 Your Impact</h3>
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                         <span>Your donation:</span>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #6b7280;">
+                            <span>Approx. in selected currency:</span>
+                            <strong id="convertedDisplay">—</strong>
+                        </div>
                         <strong id="donationAmount">$0.00</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #6b7280;">
@@ -311,15 +331,31 @@ function selectAmount(amount) {
 function updateBreakdown() {
     const amount = parseFloat(document.getElementById('amountInput').value) || 0;
     const breakdown = document.getElementById('breakdown');
-    
+
+    const currencySelect = document.getElementById('displayCurrency');
+    const selectedOption = currencySelect.options[currencySelect.selectedIndex];
+    const rateToBDT = parseFloat(selectedOption.dataset.rate);
+    const currencyCode = selectedOption.value;
+
     if (amount > 0) {
         breakdown.style.display = 'block';
+
         const fee = amount * 0.025;
         const net = amount - fee;
-        
-        document.getElementById('donationAmount').textContent = '$' + amount.toFixed(2);
-        document.getElementById('platformFee').textContent = '$' + fee.toFixed(2);
-        document.getElementById('netAmount').textContent = '$' + net.toFixed(2);
+
+        document.getElementById('donationAmount').textContent = '৳' + amount.toFixed(2);
+        document.getElementById('platformFee').textContent = '৳' + fee.toFixed(2);
+        document.getElementById('netAmount').textContent = '৳' + net.toFixed(2);
+
+
+        let converted = amount;
+        if (currencyCode !== 'BDT') {
+            converted = amount / rateToBDT;
+        }
+
+        document.getElementById('convertedDisplay').textContent =
+            converted.toFixed(2) + ' ' + currencyCode;
+
     } else {
         breakdown.style.display = 'none';
     }
@@ -352,5 +388,8 @@ function selectPaymentMethod(method) {
     document.querySelectorAll('#paymentMethodSection .payment-method').forEach(el => el.classList.remove('selected'));
     event.currentTarget.classList.add('selected');
 }
+
+    document.getElementById('displayCurrency')
+            .addEventListener('change', updateBreakdown);
 </script>
 @endsection
