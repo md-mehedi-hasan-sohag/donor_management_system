@@ -79,6 +79,8 @@
         </div>
     </div>
 
+
+
     <!-- Ongoing Events CTA Card -->
     <div class="section-card mb-4">
         <div class="section-header">
@@ -102,16 +104,34 @@
         </div>
     </div>
 
-
+    @if(auth()->user()->role === 'donor')
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5>Referral Program</h5>
+                <a href="{{ route('referrals.invite') }}" class="btn btn-primary">
+                    Invite a Friend
+                </a>
+            </div>
+        </div>
+    @endif
 
 
     <!-- Badges Earned -->
-    @if($badges->count() > 0)
+    @if($badges->count() > 0 || $referralBadgeCount > 0)
     <div class="section-card mb-4">
         <div class="section-header">
             <h2 class="section-title">🏆 Your Badges</h2>
         </div>
         <div class="badge-display">
+            @if($referralBadgeCount > 0)
+                <div class="badge-item">
+                    <div class="badge-icon">🏆</div>
+                    <strong style="display: block; margin-bottom: 0.25rem;">Referral Badge</strong>
+                    <p style="font-size: 0.875rem; color: var(--gray-600);">
+                        Earned {{ $referralBadgeCount }}
+                    </p>
+                </div>
+            @endif
             @foreach($badges as $badge)
                 <div class="badge-item">
                     <div class="badge-icon">🏆</div>

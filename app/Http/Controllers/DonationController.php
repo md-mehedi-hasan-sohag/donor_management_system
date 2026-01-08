@@ -7,6 +7,8 @@ use App\Models\Donation;
 use App\Services\DonationService;
 use Illuminate\Http\Request;
 
+
+
 class DonationController extends Controller
 {
     protected $donationService;
@@ -44,10 +46,16 @@ class DonationController extends Controller
 
         if (($validated['payment_method'] ?? 'card') === 'bkash') {
             return redirect()->route('bkash.payment', $campaign);
+
+
+
         }
 
         if (($validated['payment_method'] ?? 'card') === 'nagad') {
             return redirect()->route('nagad.payment', $campaign);
+
+
+
         }
 
         $validated['payment_method'] = $validated['payment_method'] ?? 'card';
@@ -58,11 +66,17 @@ class DonationController extends Controller
             $validated
         );
 
+        ReferralRewardController::handleSuccessfulDonation($donation->user_id);
+
         session()->forget('pending_donation');
 
         return redirect()->route('donations.receipt', $donation)
             ->with('success', 'Thank you for your donation!');
+
+
     }
+
+
 
     public function receipt(Donation $donation)
     {

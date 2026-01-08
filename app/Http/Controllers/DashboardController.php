@@ -7,6 +7,7 @@ use App\Models\Donation;
 use App\Models\User;
 use App\Models\RecipientVerification;
 use Illuminate\Http\Request;
+use App\Models\Referral;
 
 class DashboardController extends Controller
 {
@@ -119,6 +120,10 @@ class DashboardController extends Controller
 
         $badges = $user->badges;
 
-        return view('donor.dashboard', compact('stats', 'donations', 'followedCampaigns', 'recommendedCampaigns', 'badges'));
+        $referralBadgeCount = Referral::where('referrer_id', auth()->id())
+            ->where('status', 'donated')   // only successful referrals
+            ->count();
+
+        return view('donor.dashboard', compact('stats', 'donations', 'followedCampaigns', 'recommendedCampaigns', 'badges', 'referralBadgeCount'));
     }
 }

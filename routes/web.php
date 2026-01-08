@@ -26,8 +26,17 @@ use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\SavedCampaignController;
 use App\Http\Controllers\CampaignReminderController;
 use App\Http\Controllers\EventTicketDonationController;
+use App\Http\Controllers\ReferralController;
 
 
+//Referral routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/referrals/invite', [ReferralController::class, 'invite'])
+        ->name('referrals.invite');
+
+    Route::post('/referrals/generate', [ReferralController::class, 'generate'])
+        ->name('referrals.generate');
+});
 
 // Campaign Reminder (Authenticated Routes)
 Route::middleware(['auth'])->group(function () {
