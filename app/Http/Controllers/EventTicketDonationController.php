@@ -52,16 +52,8 @@ class EventTicketDonationController extends Controller
             'purchased_at' => now(),
         ]);
 
-        $amount = (int) $event->price; // or the amount you stored
+    ;
 
-        $impact = app(\App\Services\DonationImpactService::class)->getImpactForAmount($amount);
-
-        if ($impact) {
-                session()->flash('impact', [
-                'title' => $impact->title,
-                'message' => $impact->message,
-            ]);
-        }
 
         return redirect()
             ->route('events.ticket.show', $ticket->id)
