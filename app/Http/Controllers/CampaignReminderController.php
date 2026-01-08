@@ -9,21 +9,36 @@ use Illuminate\Support\Facades\Auth;
 
 class CampaignReminderController extends Controller
 {
-    public function store(Campaign $campaign)
-    {
-        // Security check: only campaign owner can set reminder
-        if ($campaign->recipient_id !== Auth::id()) {
-            abort(403);
+    /**Store a static reminder message for a campaign (recipient/owner only).*/
+  public function store(Request $request, Campaign $campaign){$user = Auth::user();
+
+        // ✅ IMPORTANT: In your project, campaign owner is usually user_id (not recipient_id)
+        if ($user->id !== $campaign->user_id) {
+            return redirect()
+                ->route('campaigns.show', $campaign)
+                ->with('error', 'You are not allowed to set a reminder for this campaign.');
         }
 
+        // ✅ Optional: Prevent duplicate reminder (one reminder per campaign per user)
+        #$alreadyExists = CampaignReminder::where('campaign_id', $campaign->id)
+        #    ->where('recipient_id', $user->id)
+        #   ->exists();
+
+        #if ($alreadyExists) {
+         #   return redirect()
+          #      ->route('campaigns.show', $campaign)
+           #     ->with('info', 'Reminder already exists for this campaign.');
+        #}
+
+        //  Store reminder (static message)
         CampaignReminder::create([
-            'campaign_id' => $campaign->id,
-            'recipient_id' => Auth::id(),
-            'message' => 'This is your reminder message.',
+            'campaign_id'  => $campaign->id,
+            'recipient_id' => $user->id,
+            'message'      => 'This is your reminder message.',
         ]);
 
-        return redirect()->back()->with('success', 'Reminder has been set successfully.');
+        return redirect()
+            ->route('campaigns.show', $campaign)
+            ->with('success', 'Reminder set successfully!');
     }
 }
-
-

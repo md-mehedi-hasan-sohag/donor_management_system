@@ -140,18 +140,23 @@
         <div class="campaign-main">
             <img src="{{ $campaign->image_path ? asset('storage/' . $campaign->image_path) : 'https://via.placeholder.com/800x400?text=Campaign+Image' }}" alt="{{ $campaign->title }}" class="campaign-image">
 
-            <!-- Check if the logged-in user is the recipient of the campaign -->
-            @auth
-                @if(Auth::check() && Auth::id() === $campaign->recipient_id)
-                    <form method="POST" action="{{ route('campaign.reminder.store', $campaign->id) }}">
+            {{-- Campaign Reminder (Recipient Only) --}}
+@auth
+    @if(auth()->id() === $campaign->user_id)
+        <form
+            action="{{ route('campaigns.reminder', $campaign) }}"
+            method="POST"
+            class="mt-3"
+        >
+            @csrf
+            <button type="submit" class="btn btn-warning w-100">
+                ⏰ Send Reminder- Campaign ending soon!
+            </button>
+        </form>
+    @endif
+@endauth
 
-                        @csrf
-                        <button type="submit" class="btn btn-warning mt-3">
-                            Set Reminder
-                        </button>
-                    </form>
-                @endif
-            @endauth
+
 
             <!-- Tabs -->
             <div class="tab-nav">
@@ -684,3 +689,7 @@
 </div>
 
 @endsection
+
+
+
+

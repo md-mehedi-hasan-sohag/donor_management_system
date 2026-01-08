@@ -27,6 +27,15 @@ use App\Http\Controllers\SavedCampaignController;
 use App\Http\Controllers\CampaignReminderController;
 
 
+// Campaign Reminder (Authenticated Routes)
+Route::middleware(['auth'])->group(function () {
+    Route::post(
+        '/campaigns/{campaign}/reminder',
+        [CampaignReminderController::class, 'store']
+    )->name('campaigns.reminder');
+});
+
+
 
 Route::get('/', function () {
     $campaigns = \App\Models\Campaign::active()->latest()->take(3)->get();
@@ -240,10 +249,7 @@ Route::middleware('auth')->group(function () {
 });
 
 
-// Campaign Reminder (Authenticated Routes)
-Route::post('/campaigns/{campaign}/reminder', [CampaignReminderController::class, 'store'])
-    ->middleware('auth')
-    ->name('campaign.reminder.store');
+
 
 
 

@@ -18,7 +18,7 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
 <style>
     /* ============================================
        THEME VARIABLES - Light & Dark Mode
@@ -617,13 +617,7 @@ main {
 <body>
     <div id="app">
 
-         <!-- Success Message  -->
 
-        @if (session('success'))
-            <div class="alert alert-success">
-               {{ session('success') }}
-            </div>
-        @endif
 
 
         <!-- Navbar -->
@@ -704,9 +698,23 @@ main {
         </nav>
 
         <!-- Main Content -->
-        <main>
-            @yield('content')
-        </main>
+<main>
+    <div class="container mt-3">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+    </div>
+
+    @yield('content')
+</main>
 
         <!-- Footer -->
         <footer class="footer">
@@ -716,10 +724,10 @@ main {
                     <div class="footer-section">
                         <div class="footer-logo">DonorLink</div>
                         <p class="footer-description">
-                            DonorLink is Bangladesh's leading transparent fundraising platform, connecting generous donors 
+                            DonorLink is Bangladesh's leading transparent fundraising platform, connecting generous donors
                             with verified campaigns to create lasting impact in communities.
                         </p>
-                        
+
                         <div class="social-links">
                             <a href="#" class="social-link" title="LinkedIn">
                                 <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
@@ -760,7 +768,7 @@ main {
                     <!-- Contact Us -->
                     <div class="footer-section">
                         <h3>Contact Us</h3>
-                        
+
                         <div class="contact-item">
                             <div class="contact-icon">📍</div>
                             <div class="contact-text">
