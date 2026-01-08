@@ -7,6 +7,7 @@ use App\Models\Donation;
 use App\Models\Currency;
 use App\Services\DonationService;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ReferralRewardController;
 
 class DonationController extends Controller
 {
@@ -74,6 +75,17 @@ class DonationController extends Controller
         ReferralRewardController::handleSuccessfulDonation($donation->user_id);
 
         session()->forget('pending_donation');
+
+        $amount = (int) $donation->amount;
+
+        $impact = app(\App\Services\DonationImpactService::class)->getImpactForAmount($amount);
+
+        if ($impact) {
+            session()->flash('impact', [
+                'title' => $impact->title,
+                'message' => $impact->message,
+            ]);
+        }
 
         return redirect()
             ->route('donations.receipt', $donation)

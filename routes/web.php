@@ -27,6 +27,7 @@ use App\Http\Controllers\SavedCampaignController;
 use App\Http\Controllers\CampaignReminderController;
 use App\Http\Controllers\EventTicketDonationController;
 use App\Http\Controllers\ReferralController;
+use App\Http\Controllers\DonationImpactController;
 
 
 //Referral routes
@@ -183,6 +184,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/verification', [RecipientVerificationController::class, 'index'])->name('verification.index');
     Route::post('/verification', [RecipientVerificationController::class, 'store'])->name('verification.store');
 
+
+    //donation impact routes
+    Route::get('/donation-impacts', [DonationImpactController::class, 'index'])
+        ->name('donation-impacts.index');
 
 
 

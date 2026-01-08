@@ -716,6 +716,33 @@ main {
     @yield('content')
 </main>
 
+{{-- Donation Impact Toast --}}
+@if(session('impact'))
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+        <div id="impactToast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">{{ session('impact.title') }}</strong>
+                <small>Just now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ session('impact.message') }}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const el = document.getElementById('impactToast');
+            if (el && window.bootstrap) {
+                const toast = new bootstrap.Toast(el, { delay: 5000 });
+                toast.show();
+            }
+        })();
+    </script>
+@endif
+
+
         <!-- Footer -->
         <footer class="footer">
             <div class="container">

@@ -60,6 +60,10 @@
 
 <div class="container">
     <!-- Stats Overview -->
+
+    <a href="{{ route('donation-impacts.index') }}" class="btn btn-primary" style="margin-bottom: 1rem;">
+    🌟 See Your Donation Impact
+    </a>
     <div class="grid grid-cols-4 mb-4">
         <div class="stat-box">
             <div class="stat-value">${{ number_format($stats['total_donated'], 2) }}</div>
