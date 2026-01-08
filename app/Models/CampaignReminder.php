@@ -14,16 +14,5 @@ class CampaignReminder extends Model
         'recipient_id',
         'message',
     ];
-
-    // Relationship with Campaign (optional, if needed)
-    public function campaign()
-    {
-        return $this->belongsTo(Campaign::class);
-    }
-
-    // Relationship with User (optional, if needed)
-    public function recipient()
-    {
-        return $this->belongsTo(User::class, 'recipient_id');
-    }
 }
+

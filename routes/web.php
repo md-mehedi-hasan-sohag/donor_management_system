@@ -25,6 +25,8 @@ use App\Http\Controllers\FraudReportController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\SavedCampaignController;
 use App\Http\Controllers\CampaignReminderController;
+use App\Http\Controllers\EventTicketDonationController;
+
 
 
 // Campaign Reminder (Authenticated Routes)
@@ -34,6 +36,28 @@ Route::middleware(['auth'])->group(function () {
         [CampaignReminderController::class, 'store']
     )->name('campaigns.reminder');
 });
+
+
+//event ticket donation routes
+Route::middleware(['auth'])->group(function () {
+
+    // Ongoing Events list page (donor dashboard button goes here)
+    Route::get('/events', [EventTicketDonationController::class, 'index'])
+        ->name('events.index');
+
+    // Buy ticket (uses slug binding)
+    Route::post('/events/{event:slug}/buy', [EventTicketDonationController::class, 'buy'])
+        ->name('events.buy');
+
+    // Ticket page after purchase
+    Route::get('/events/ticket/{id}', [EventTicketDonationController::class, 'showTicket'])
+        ->name('events.ticket.show');
+
+    // Optional: My tickets page
+    Route::get('/my-tickets', [EventTicketDonationController::class, 'myTickets'])
+        ->name('events.my_tickets');
+});
+
 
 
 
@@ -149,10 +173,15 @@ Route::middleware(['auth'])->group(function () {
     // Recipient Verification
     Route::get('/verification', [RecipientVerificationController::class, 'index'])->name('verification.index');
     Route::post('/verification', [RecipientVerificationController::class, 'store'])->name('verification.store');
+
+
+
+
 });
 
-/*
-|--------------------------------------------------------------------------
+
+
+/*|--------------------------------------------------------------------------
 | Admin Routes
 |--------------------------------------------------------------------------
 */

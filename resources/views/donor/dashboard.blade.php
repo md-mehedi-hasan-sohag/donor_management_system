@@ -79,6 +79,32 @@
         </div>
     </div>
 
+    <!-- Ongoing Events CTA Card -->
+    <div class="section-card mb-4">
+        <div class="section-header">
+            <h2 class="section-title">🎫 Ongoing Events</h2>
+        </div>
+
+        <div class="card" style="border-radius: 16px; border: 1px solid var(--gray-200);">
+            <div class="card-body" style="display:flex; align-items:center; justify-content:space-between; gap: 1rem;">
+                <div>
+                    <h4 style="font-weight: 900; margin-bottom: 6px;">Buy a ticket & donate</h4>
+                    <p style="color: var(--gray-600); margin: 0; max-width: 650px;">
+                        Attend charity events and your ticket price will be added as a donation to the linked campaign.
+                        Fun for you — real impact for someone else.
+                    </p>
+                </div>
+
+                <a href="{{ route('events.index') }}" class="btn btn-primary" style="font-weight: 800; white-space: nowrap;">
+                    ✨ Check out ongoing tickets →
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+
+
     <!-- Badges Earned -->
     @if($badges->count() > 0)
     <div class="section-card mb-4">
