@@ -33,11 +33,12 @@ class EventTicketDonationController extends Controller
         $donation = $donationService->processDonation($campaign, $user, [
             'amount' => (float) $event->ticket_price,
             'donation_type' => 'monetary',
-            'payment_method' => 'card', // ✅ FIXED
-            'message' => '🎟️ Event Ticket Purchase: ' . $event->title,
+            'payment_method' => 'event_ticket',
+            'message' => 'Event Ticket: ' . $event->title,
             'is_anonymous' => false,
             'show_amount' => true,
- ]);
+        ]);
+
         // Create ticket record
         $ticketCode = strtoupper(Str::random(10)) . '-' . strtoupper(Str::random(6));
 
@@ -49,7 +50,7 @@ class EventTicketDonationController extends Controller
             'amount' => $event->ticket_price,
             'ticket_code' => $ticketCode,
             'purchased_at' => now(),
-]);
+        ]);
 
         $amount = (int) $event->price; // or the amount you stored
 
@@ -80,5 +81,16 @@ class EventTicketDonationController extends Controller
         return view('events.ticket', compact('ticket'));
     }
 
+    // 4) Donor ticket history (optional list)
+    public function myTickets()
+    {
+        $user = Auth::user();
 
+        $tickets = EventTicketDonation::with('event')
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get();
+
+        return view('events.my_tickets', compact('tickets'));
+    }
 }
